@@ -1,11 +1,11 @@
 # Stable version of etherpad doesn't support npm 2
-FROM buildpack-deps:jessie
+FROM debian:jessie
 MAINTAINER Tony Motakis <tvelocity@gmail.com>
 
 ENV ETHERPAD_VERSION 1.4.1
 
 RUN apt-get update && \
-    apt-get install -y curl unzip nodejs-legacy npm mysql-client abiword && \
+    apt-get install -y curl unzip nodejs-legacy npm mysql-client && \
     rm -r /var/lib/apt/lists/*
 
 WORKDIR /opt/

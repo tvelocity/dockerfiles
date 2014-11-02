@@ -58,7 +58,6 @@ cat << EOF > settings.json
                     "password": "${ETHERPAD_DB_PASSWORD}", 
                     "database": "${ETHERPAD_DB_NAME}"
                   },
-  "abiword" : "/usr/bin/abiword",
 EOF
 
 if [ $ETHERPAD_ADMIN_PASSWORD ]; then
@@ -78,8 +77,5 @@ fi
 cat << EOF >> settings.json
 }
 EOF
-
-# abiword needs this
-export XDG_RUNTIME_DIR=/tmp
 
 exec "$@"
