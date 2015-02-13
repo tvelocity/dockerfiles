@@ -31,6 +31,20 @@ ETHERPAD_DB_HOST="${MYSQL_PORT_3306_TCP_ADDR}"
 : ${ETHERPAD_SESSION_KEY:=$(
 		node -p "require('crypto').randomBytes(32).toString('hex')")}
 
+# Wait for mysql server to start (max 120 seconds)
+DB_TIMEOUT=120
+DB_TIMEOUT_STEP=5
+echo "mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -h${ETHERPAD_DB_HOST} --skip-column-names -e 'SELECT 1;'"
+while ! mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -h${ETHERPAD_DB_HOST} --skip-column-names -e 'SELECT 1;' >/dev/null 2>&1
+do
+    DB_TIMEOUT=$(expr $DB_TIMEOUT - $DB_TIMEOUT_STEP)
+    if [ $DB_TIMEOUT -eq 0 ]; then
+        echo "Timeout error occurred trying to start MySQL Daemon."
+        exit 1
+    fi
+    sleep $DB_TIMEOUT_STEP
+done
+
 # Check if database already exists
 RESULT=`mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} \
 	-h${ETHERPAD_DB_HOST} --skip-column-names \
