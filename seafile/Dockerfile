@@ -1,7 +1,7 @@
 FROM buildpack-deps:jessie
 MAINTAINER Tony Motakis <tvelocity@gmail.com>
 
-ENV SEAFILE_VERSION 3.1.7
+ENV SEAFILE_VERSION 4.1.1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl expect mysql-client python2.7 python-setuptools python-simplejson \
