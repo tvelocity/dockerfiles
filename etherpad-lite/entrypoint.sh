@@ -25,57 +25,57 @@ if [ -z "$ETHERPAD_DB_PASSWORD" ]; then
 	exit 1
 fi
 
-ETHERPAD_DB_HOST="${MYSQL_PORT_3306_TCP_ADDR}"
-
 : ${ETHERPAD_TITLE:=Etherpad}
 : ${ETHERPAD_SESSION_KEY:=$(
 		node -p "require('crypto').randomBytes(32).toString('hex')")}
 
 # Check if database already exists
 RESULT=`mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} \
-	-h${ETHERPAD_DB_HOST} --skip-column-names \
+	-hmysql --skip-column-names \
 	-e "SHOW DATABASES LIKE '${ETHERPAD_DB_NAME}'"`
 
 if [ "$RESULT" != $ETHERPAD_DB_NAME ]; then
 	# mysql database does not exist, create it
 	echo "Creating database ${ETHERPAD_DB_NAME}"
 
-	mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} \
-	      -h${ETHERPAD_DB_HOST} \
+	mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -hmysql \
 	      -e "create database ${ETHERPAD_DB_NAME}"
 fi
 
-cat << EOF > settings.json
-{
-  "title": "${ETHERPAD_TITLE}",
-  "ip": "0.0.0.0",
-  "port" : 9001,
-  "sessionKey" : "${ETHERPAD_SESSION_KEY}",
-  "dbType" : "mysql",
-  "dbSettings" : {
-                    "user"    : "${ETHERPAD_DB_USER}", 
-                    "host"    : "${ETHERPAD_DB_HOST}", 
-                    "password": "${ETHERPAD_DB_PASSWORD}", 
-                    "database": "${ETHERPAD_DB_NAME}"
-                  },
-EOF
+if [ ! -f settings.json ]; then
 
-if [ $ETHERPAD_ADMIN_PASSWORD ]; then
-	: ${ETHERPAD_ADMIN_USER:=admin}
+	cat <<- EOF > settings.json
+	{
+	  "title": "${ETHERPAD_TITLE}",
+	  "ip": "0.0.0.0",
+	  "port" : 9001,
+	  "sessionKey" : "${ETHERPAD_SESSION_KEY}",
+	  "dbType" : "mysql",
+	  "dbSettings" : {
+			    "user"    : "${ETHERPAD_DB_USER}",
+			    "host"    : "mysql",
+			    "password": "${ETHERPAD_DB_PASSWORD}",
+			    "database": "${ETHERPAD_DB_NAME}"
+			  },
+	EOF
 
-cat << EOF >> settings.json
-  "users": {
-    "${ETHERPAD_ADMIN_USER}": {
-      "password": "${ETHERPAD_ADMIN_PASSWORD}",
-      "is_admin": true
-    }
-  },
-EOF
+	if [ $ETHERPAD_ADMIN_PASSWORD ]; then
 
+		: ${ETHERPAD_ADMIN_USER:=admin}
+
+		cat <<- EOF >> settings.json
+		  "users": {
+		    "${ETHERPAD_ADMIN_USER}": {
+		      "password": "${ETHERPAD_ADMIN_PASSWORD}",
+		      "is_admin": true
+		    }
+		  },
+		EOF
+	fi
+
+	cat <<- EOF >> settings.json
+	}
+	EOF
 fi
-
-cat << EOF >> settings.json
-}
-EOF
 
 exec "$@"
