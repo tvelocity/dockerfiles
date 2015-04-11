@@ -7,7 +7,6 @@ if [ -z "$MYSQL_PORT_3306_TCP_ADDR" ]; then
 	exit 1
 fi
 SEAFILE_DB_PASSWORD="${MYSQL_ENV_MYSQL_ROOT_PASSWORD}"
-SEAFILE_DB_HOST="${MYSQL_PORT_3306_TCP_ADDR}"
 
 : ${SEAFILE_DB_CCNET:=ccnet-db}
 : ${SEAFILE_DB_SEAFILE:=seafile-db}
@@ -28,17 +27,17 @@ if [ ! -f ../ccnet/ccnet.conf ]; then
 	: ${SEAFILE_ADMIN_PASSWORD:=admin}
 
 	# check first databases are available
-	if mysql -uroot -p$MYSQL_ENV_MYSQL_ROOT_PASSWORD -h$SEAFILE_DB_HOST \
+	if mysql -uroot -p$MYSQL_ENV_MYSQL_ROOT_PASSWORD -hmysql \
 	   -e "use \`${SEAFILE_DB_CCNET}\`" 2> /dev/null; then
 		echo >&2 'error: mysql database already exists'
 		exit 1
 	fi
-	if mysql -uroot -p$MYSQL_ENV_MYSQL_ROOT_PASSWORD -h$SEAFILE_DB_HOST \
+	if mysql -uroot -p$MYSQL_ENV_MYSQL_ROOT_PASSWORD -hmysql \
 	   -e "use \`${SEAFILE_DB_SEAFILE}\`" 2> /dev/null; then
 		echo >&2 'error: mysql database already exists'
 		exit 1
 	fi
-	if mysql -uroot -p$MYSQL_ENV_MYSQL_ROOT_PASSWORD -h$SEAFILE_DB_HOST \
+	if mysql -uroot -p$MYSQL_ENV_MYSQL_ROOT_PASSWORD -hmysql \
 	   -e "use \`${SEAFILE_DB_SEAHUB}\`" 2> /dev/null; then
 		echo >&2 'error: mysql database already exists'
 		exit 1
@@ -67,7 +66,7 @@ if [ ! -f ../ccnet/ccnet.conf ]; then
 		"Please choose a way to initialize seafile databases:"
 		{ send "1\r" }
 		"What is the host of mysql server?"
-		{ send "${SEAFILE_DB_HOST}\r" }
+		{ send "mysql\r" }
 		"What is the port of mysql server?"
 		{ send "\r" }
 		"What is the password of the mysql root user?"
