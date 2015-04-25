@@ -1,6 +1,6 @@
 FROM debian:jessie
 
-ENV SYNCTHING_VERSION 0.10.30
+ENV SYNCTHING_VERSION 0.11.0
 
 RUN apt-get update && apt-get install -y ca-certificates --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
