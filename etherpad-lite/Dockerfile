@@ -20,6 +20,8 @@ WORKDIR etherpad-lite
 RUN bin/installDeps.sh && rm settings.json
 COPY entrypoint.sh /entrypoint.sh
 
+RUN sed -i 's/^node/exec\ node/' bin/run.sh
+
 VOLUME /opt/etherpad-lite/var
 RUN ln -s var/settings.json settings.json
 
