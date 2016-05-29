@@ -2,7 +2,7 @@
 FROM debian:jessie
 MAINTAINER Tony Motakis <tvelocity@gmail.com>
 
-ENV ETHERPAD_VERSION 1.5.7
+ENV ETHERPAD_VERSION 1.6.0
 
 RUN apt-get update && \
     apt-get install -y curl unzip nodejs-legacy npm mysql-client && \
