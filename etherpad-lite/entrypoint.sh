@@ -7,9 +7,7 @@ if [ -z "$MYSQL_PORT_3306_TCP_ADDR" ]; then
 	exit 1
 fi
 
-if [ -z "$ETHERPAD_DB_HOST" ]; then
-	$ETHERPAD_DB_HOST = 'mysql'
-fi
+: ${ETHERPAD_DB_HOST:=mysql}
 
 # if we're linked to MySQL, and we're using the root user, and our linked
 # container has a default "root" password set up and passed through... :)
@@ -58,7 +56,7 @@ if [ ! -f settings.json ]; then
 	  "dbType" : "mysql",
 	  "dbSettings" : {
 			    "user"    : "${ETHERPAD_DB_USER}",
-			    "host"    : ${ETHERPAD_DB_HOST},
+			    "host"    : "${ETHERPAD_DB_HOST}",
 			    "password": "${ETHERPAD_DB_PASSWORD}",
 			    "database": "${ETHERPAD_DB_NAME}"
 			  },
