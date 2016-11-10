@@ -32,20 +32,32 @@ fi
 : ${ETHERPAD_SESSION_KEY:=$(
 		node -p "require('crypto').randomBytes(32).toString('hex')")}
 
-# Check if database already exists
-RESULT=`mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} \
+# Check DB connectivity
+
+for ((i=0;i<20;i++))
+do
+    DB_CONNECTABLE=$(mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -hmysql -e 'status' >/dev/null 2>&1; echo "$?")
+    if [[ DB_CONNECTABLE -eq 0 ]]; then
+        break
+    fi
+    sleep 1
+done
+
+if [[ $DB_CONNECTABLE -eq 0 ]]; then
+  # Check if database already exists
+  RESULT=`mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} \
 	-hmysql --skip-column-names \
 	-e "SHOW DATABASES LIKE '${ETHERPAD_DB_NAME}'"`
 
-if [ "$RESULT" != $ETHERPAD_DB_NAME ]; then
+  if [ "$RESULT" != $ETHERPAD_DB_NAME ]; then
 	# mysql database does not exist, create it
 	echo "Creating database ${ETHERPAD_DB_NAME}"
 
 	mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -hmysql \
 	      -e "create database ${ETHERPAD_DB_NAME}"
-fi
+  fi
 
-if [ ! -f settings.json ]; then
+  if [ ! -f settings.json ]; then
 
 	cat <<- EOF > settings.json
 	{
@@ -79,6 +91,11 @@ if [ ! -f settings.json ]; then
 	cat <<- EOF >> settings.json
 	}
 	EOF
+  fi
+
+  exec "$@"
+else
+    echo "Cannot connect to Mysql"
+    exit $DB_CONNECTABLE
 fi
 
-exec "$@"
