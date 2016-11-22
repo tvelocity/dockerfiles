@@ -33,7 +33,7 @@ $ docker run -d -e MYSQL_ROOT_PASSWORD=password --name ep_mysql mysql
 Finally you can start an instance of Etherpad Lite:
 
 ```bash
-$ docker run -d --link=ep_mysql:mysql -p 9001:9001 tvelocity/etherpad-lite
+$ docker run -d --link=ep_mysql:mysql -p 9001:9001 --name ep tvelocity/etherpad-lite
 ```
 
 This will create an etherpad database to the mysql container, if it does not
