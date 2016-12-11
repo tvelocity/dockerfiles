@@ -1,23 +1,17 @@
 #!/bin/bash
 set -e
 
-if [ -z "$MYSQL_PORT_3306_TCP_ADDR" ]; then
-	echo >&2 'error: missing MYSQL_PORT_3306_TCP environment variable'
-	echo >&2 '  Did you forget to --link some_mysql_container:mysql ?'
-	exit 1
-fi
-
 : ${ETHERPAD_DB_HOST:=mysql}
-
-# if we're linked to MySQL, and we're using the root user, and our linked
-# container has a default "root" password set up and passed through... :)
 : ${ETHERPAD_DB_USER:=root}
+: ${ETHERPAD_DB_NAME:=etherpad}
+ETHERPAD_DB_NAME=$( echo $ETHERPAD_DB_NAME | sed 's/\./_/g' )
+
+# ETHERPAD_DB_PASSWORD is mandatory in mysql container, so we're not offering
+# any default. If we're linked to MySQL through legacy link, then we can try
+# using the password from the env variable MYSQL_ENV_MYSQL_ROOT_PASSWORD
 if [ "$ETHERPAD_DB_USER" = 'root' ]; then
 	: ${ETHERPAD_DB_PASSWORD:=$MYSQL_ENV_MYSQL_ROOT_PASSWORD}
 fi
-: ${ETHERPAD_DB_NAME:=etherpad}
-
-ETHERPAD_DB_NAME=$( echo $ETHERPAD_DB_NAME | sed 's/\./_/g' )
 
 if [ -z "$ETHERPAD_DB_PASSWORD" ]; then
 	echo >&2 'error: missing required ETHERPAD_DB_PASSWORD environment variable'
@@ -34,14 +28,14 @@ fi
 
 # Check if database already exists
 RESULT=`mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} \
-	-hmysql --skip-column-names \
+	-h${ETHERPAD_DB_HOST} --skip-column-names \
 	-e "SHOW DATABASES LIKE '${ETHERPAD_DB_NAME}'"`
 
 if [ "$RESULT" != $ETHERPAD_DB_NAME ]; then
 	# mysql database does not exist, create it
 	echo "Creating database ${ETHERPAD_DB_NAME}"
 
-	mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -hmysql \
+	mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -h${ETHERPAD_DB_HOST} \
 	      -e "create database ${ETHERPAD_DB_NAME}"
 fi
 

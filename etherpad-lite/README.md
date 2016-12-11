@@ -27,17 +27,24 @@ You don't need to set up a server and install Etherpad in order to use it. Just 
 First you need a running mysql container, for example:
 
 ```bash
-$ docker run -d -e MYSQL_ROOT_PASSWORD=password --name ep_mysql mysql
+$ docker network create ep_network
+$ docker run -d --network ep_network -e MYSQL_ROOT_PASSWORD=password --name ep_mysql mysql
 ```
 
 Finally you can start an instance of Etherpad Lite:
 
 ```bash
-$ docker run -d --link=ep_mysql:mysql -p 9001:9001 tvelocity/etherpad-lite
+$ docker run -d \
+    --network ep_network \
+    -e ETHERPAD_DB_HOST=ep_mysql \
+    -e ETHERPAD_DB_PASSWORD=password \
+    -p 9001:9001 \
+    tvelocity/etherpad-lite
 ```
 
-This will create an etherpad database to the mysql container, if it does not
-already exist. You can now access Etherpad Lite from http://localhost:9001/
+Etherpad will automatically create an `etherpad` database in the specified mysql
+server if it does not already exist.
+You can now access Etherpad Lite from http://localhost:9001/
 
 ## Environment variables
 
@@ -54,11 +61,12 @@ and the /admin/ interface is accessible via it.
 * `ETHERPAD_ADMIN_USER`: If the admin password is set, this defaults to "admin".
 Otherwise the user can set it to another username.
 
+* `ETHERPAD_DB_HOST`: Hostname of the mysql databse to use. Defaults to `mysql`
 * `ETHERPAD_DB_USER`: By default Etherpad Lite will attempt to connect as root
-to the mysql container. This allows to change this.
-* `ETHERPAD_DB_PASSWORD`: The password for the mysql user. If the root user is
-used, then the password will default to the mysql container's
-`MYSQL_ROOT_PASSWORD`.
+to the mysql container.
+* `ETHERPAD_DB_PASSWORD`: MySQL password to use, mandatory. If legacy links
+are used and ETHERPAD_DB_USER is root, then `MYSQL_ENV_MYSQL_ROOT_PASSWORD` is
+automatically used.
 * `ETHERPAD_DB_NAME`: The mysql database to use. Defaults to *etherpad*. If the
 database is not available, it will be created when the container is launched.
 
