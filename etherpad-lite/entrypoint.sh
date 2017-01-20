@@ -37,6 +37,10 @@ if [ "$RESULT" != $ETHERPAD_DB_NAME ]; then
 
 	mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -h${ETHERPAD_DB_HOST} \
 	      -e "create database ${ETHERPAD_DB_NAME}"
+	      
+	mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -hmysql \
+	      -e "ALTER DATABASE `${ETHERPAD_DB_NAME}` CHARACTER SET utf8 COLLATE utf8_bin;"
+	     
 fi
 
 if [ ! -f settings.json ]; then
