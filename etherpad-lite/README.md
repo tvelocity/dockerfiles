@@ -46,6 +46,18 @@ Etherpad will automatically create an `etherpad` database in the specified mysql
 server if it does not already exist.
 You can now access Etherpad Lite from http://localhost:9001/
 
+## Docker compose
+
+[Git Repo](https://github.com/tvelocity/dockerfiles/tree/master/etherpad-lite)
+contains a docker-compose file with a pre-configured mariadb container.
+
+Use it:
+
+1. Install docker-compose.
+2. Clone the repo and cd into etherpad-lite.
+3. Rename `example.env` to `.env` and adjust the passwords.
+4. Start up everything with `docker-compose up`.
+
 ## Environment variables
 
 This image supports the following environment variables:
@@ -61,7 +73,9 @@ and the /admin/ interface is accessible via it.
 * `ETHERPAD_ADMIN_USER`: If the admin password is set, this defaults to "admin".
 Otherwise the user can set it to another username.
 
-* `ETHERPAD_DB_HOST`: Hostname of the mysql databse to use. Defaults to `mysql`
+* `ETHERPAD_DB_HOST`: Hostname of the mysql databse to use. Defaults to `mysql`.
+* `ETHERPAD_DB_PORT`: Port number of the mysql database to use. Defaults to
+`3306`.
 * `ETHERPAD_DB_USER`: By default Etherpad Lite will attempt to connect as root
 to the mysql container.
 * `ETHERPAD_DB_PASSWORD`: MySQL password to use, mandatory. If legacy links
@@ -72,3 +86,4 @@ database is not available, it will be created when the container is launched.
 
 The generated settings.json file will be available as a volume under
 */opt/etherpad-lite/var/*.
+

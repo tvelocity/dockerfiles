@@ -18,7 +18,7 @@ RUN curl -SL \
 WORKDIR etherpad-lite
 
 RUN bin/installDeps.sh && rm settings.json
-COPY entrypoint.sh /entrypoint.sh
+ADD assets /
 
 RUN sed -i 's/^node/exec\ node/' bin/run.sh
 
@@ -28,3 +28,4 @@ RUN ln -s var/settings.json settings.json
 EXPOSE 9001
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["bin/run.sh", "--root"]
+
