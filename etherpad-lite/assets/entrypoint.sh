@@ -2,6 +2,7 @@
 set -e
 
 : ${ETHERPAD_DB_HOST:=mysql}
+: ${ETHERPAD_DB_PORT:3306}
 : ${ETHERPAD_DB_USER:=root}
 : ${ETHERPAD_DB_NAME:=etherpad}
 ETHERPAD_DB_NAME=$( echo $ETHERPAD_DB_NAME | sed 's/\./_/g' )
@@ -26,9 +27,18 @@ fi
 : ${ETHERPAD_SESSION_KEY:=$(
 		node -p "require('crypto').randomBytes(32).toString('hex')")}
 
+# Wait for database host to start up mysql
+while ! mysqlshow -h $ETHERPAD_DB_HOST -P $ETHERPAD_DB_PORT \
+	-u "${ETHERPAD_DB_USER}" -p"${ETHERPAD_DB_PASSWORD}"
+do
+	echo "$(date) - still trying connect to DBMS on "
+	echo "$ETHERPAD_DB_HOST:$ETHERPAD_DB_PORT as user ${ETHERPAD_DB_USER}"
+	sleep 1
+done
+
 # Check if database already exists
 RESULT=`mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} \
-	-h${ETHERPAD_DB_HOST} --skip-column-names \
+	-h${ETHERPAD_DB_HOST} -P${ETHERPAD_DB_PORT} --skip-column-names \
 	-e "SHOW DATABASES LIKE '${ETHERPAD_DB_NAME}'"`
 
 if [ "$RESULT" != $ETHERPAD_DB_NAME ]; then
@@ -36,43 +46,21 @@ if [ "$RESULT" != $ETHERPAD_DB_NAME ]; then
 	echo "Creating database ${ETHERPAD_DB_NAME}"
 
 	mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -h${ETHERPAD_DB_HOST} \
-	      -e "create database ${ETHERPAD_DB_NAME}"
+		-P${ETHERPAD_DB_PORT} -e "CREATE DATABASE ${ETHERPAD_DB_NAME}"
 fi
 
 if [ ! -f settings.json ]; then
-
-	cat <<- EOF > settings.json
-	{
-	  "title": "${ETHERPAD_TITLE}",
-	  "ip": "0.0.0.0",
-	  "port" :${ETHERPAD_PORT},
-	  "sessionKey" : "${ETHERPAD_SESSION_KEY}",
-	  "dbType" : "mysql",
-	  "dbSettings" : {
-			    "user"    : "${ETHERPAD_DB_USER}",
-			    "host"    : "${ETHERPAD_DB_HOST}",
-			    "password": "${ETHERPAD_DB_PASSWORD}",
-			    "database": "${ETHERPAD_DB_NAME}"
-			  },
-	EOF
-
-	if [ $ETHERPAD_ADMIN_PASSWORD ]; then
-
-		: ${ETHERPAD_ADMIN_USER:=admin}
-
-		cat <<- EOF >> settings.json
-		  "users": {
-		    "${ETHERPAD_ADMIN_USER}": {
-		      "password": "${ETHERPAD_ADMIN_PASSWORD}",
-		      "is_admin": true
-		    }
-		  },
-		EOF
-	fi
-
-	cat <<- EOF >> settings.json
-	}
-	EOF
+	echo "Creating settings.json"
+	env \
+		ETHERPAD_DB_HOST="$ETHERPAD_DB_HOST" \
+		ETHERPAD_DB_PORT="$ETHERPAD_DB_PORT" \
+		ETHERPAD_DB_USER="$ETHERPAD_DB_USER" \
+		ETHERPAD_DB_NAME="$ETHERPAD_DB_NAME" \
+		ETHERPAD_TITLE="$ETHERPAD_TITLE" \
+		ETHERPAD_PORT="$ETHERPAD_PORT" \
+		ETHERPAD_SESSION_KEY="$ETHERPAD_SESSION_KEY" \
+		node /settings-generator.js > settings.json
 fi
 
 exec "$@"
+
