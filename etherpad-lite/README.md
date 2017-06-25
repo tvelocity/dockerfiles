@@ -67,6 +67,8 @@ to the mysql container.
 * `ETHERPAD_DB_PASSWORD`: MySQL password to use, mandatory. If legacy links
 are used and ETHERPAD_DB_USER is root, then `MYSQL_ENV_MYSQL_ROOT_PASSWORD` is
 automatically used.
+* `ETHERPAD_DB_PASSWORD_FILE`: MySQL password to use, replace `ETHERPAD_DB_PASSWORD`
+when using [Docker secrets](https://docs.docker.com/engine/swarm/secrets/).
 * `ETHERPAD_DB_NAME`: The mysql database to use. Defaults to *etherpad*. If the
 database is not available, it will be created when the container is launched.
 
