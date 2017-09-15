@@ -4,6 +4,7 @@ set -e
 : ${ETHERPAD_DB_HOST:=mysql}
 : ${ETHERPAD_DB_USER:=root}
 : ${ETHERPAD_DB_NAME:=etherpad}
+: ${ETHERPAD_DB_CHARSET:=utf8mb4}
 ETHERPAD_DB_NAME=$( echo $ETHERPAD_DB_NAME | sed 's/\./_/g' )
 
 # ETHERPAD_DB_PASSWORD is mandatory in mysql container, so we're not offering
@@ -52,7 +53,8 @@ if [ ! -f settings.json ]; then
 			    "user"    : "${ETHERPAD_DB_USER}",
 			    "host"    : "${ETHERPAD_DB_HOST}",
 			    "password": "${ETHERPAD_DB_PASSWORD}",
-			    "database": "${ETHERPAD_DB_NAME}"
+			    "database": "${ETHERPAD_DB_NAME}",
+			    "charset": "${ETHERPAD_DB_CHARSET}"
 			  },
 	EOF
 

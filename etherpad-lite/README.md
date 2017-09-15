@@ -69,6 +69,7 @@ are used and ETHERPAD_DB_USER is root, then `MYSQL_ENV_MYSQL_ROOT_PASSWORD` is
 automatically used.
 * `ETHERPAD_DB_NAME`: The mysql database to use. Defaults to *etherpad*. If the
 database is not available, it will be created when the container is launched.
+* `ETHERPAD_DB_CHARSET`: The charset to use. Defaults to *utf8mb4*.
 
 The generated settings.json file will be available as a volume under
 */opt/etherpad-lite/var/*.
