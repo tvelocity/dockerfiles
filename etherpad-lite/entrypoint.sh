@@ -25,8 +25,6 @@ fi
 
 : ${ETHERPAD_TITLE:=Etherpad}
 : ${ETHERPAD_PORT:=9001}
-: ${ETHERPAD_SESSION_KEY:=$(
-		node -p "require('crypto').randomBytes(32).toString('hex')")}
 
 # Check if database already exists
 if [ "$ETHERPAD_DB_TYPE" == 'mysql' ]; then
@@ -61,7 +59,6 @@ if [ ! -f settings.json ]; then
 	  "title": "${ETHERPAD_TITLE}",
 	  "ip": "0.0.0.0",
 	  "port" :${ETHERPAD_PORT},
-	  "sessionKey" : "${ETHERPAD_SESSION_KEY}",
 	  "dbType" : "${ETHERPAD_DB_TYPE}",
 	  "dbSettings" : {
 			    "user"    : "${ETHERPAD_DB_USER}",
