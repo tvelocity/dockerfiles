@@ -6,9 +6,9 @@ text editor. The Dockerfile for this image has been inspired by the
 [johbo's etherpad-lite](https://registry.hub.docker.com/u/johbo/etherpad-lite/)
 image.
 
-This image uses an mysql container for the backend for the pads. It is based
-on debian jessie instead of the official node docker image, since the latest
-stable version of etherpad-lite does not support npm 2.
+This image uses a database (mysql or postgres) container for the backend for
+the pads. It is based on debian jessie instead of the official node docker
+image, since the latest stable version of etherpad-lite does not support npm 2.
 
 ## About Etherpad Lite
 
@@ -61,14 +61,17 @@ and the /admin/ interface is accessible via it.
 * `ETHERPAD_ADMIN_USER`: If the admin password is set, this defaults to "admin".
 Otherwise the user can set it to another username.
 
-* `ETHERPAD_DB_HOST`: Hostname of the mysql databse to use. Defaults to `mysql`
+* `ETHERPAD_DB_TYPE`: Type of databse to use. Defaults to `mysql`.
+* `ETHERPAD_DB_HOST`: Hostname of the database to use. Defaults to `mysql`.
 * `ETHERPAD_DB_USER`: By default Etherpad Lite will attempt to connect as root
-to the mysql container.
-* `ETHERPAD_DB_PASSWORD`: MySQL password to use, mandatory. If legacy links
-are used and ETHERPAD_DB_USER is root, then `MYSQL_ENV_MYSQL_ROOT_PASSWORD` is
+to the database container.
+* `ETHERPAD_DB_PASSWORD`: Password to use, mandatory. If legacy links
+are used and `ETHERPAD_DB_USER` is root, then `MYSQL_ENV_MYSQL_ROOT_PASSWORD` is
 automatically used.
-* `ETHERPAD_DB_NAME`: The mysql database to use. Defaults to *etherpad*. If the
-database is not available, it will be created when the container is launched.
+* `ETHERPAD_DB_NAME`: The database to use. Defaults to *etherpad*. If the
+database is not available, it will be created when the container is launched
+(only if the database type is either `mysql` or `postgres`, and the user need to
+have the right to create the database).
 * `ETHERPAD_DB_CHARSET`: The charset to use. Defaults to *utf8mb4*.
 
 The generated settings.json file will be available as a volume under

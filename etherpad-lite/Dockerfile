@@ -5,7 +5,7 @@ MAINTAINER Tony Motakis <tvelocity@gmail.com>
 ENV ETHERPAD_VERSION 1.6.1
 
 RUN apt-get update && \
-    apt-get install -y curl unzip nodejs-legacy npm mysql-client && \
+    apt-get install -y curl unzip nodejs-legacy npm mysql-client node-pg postgresql-client && \
     rm -r /var/lib/apt/lists/*
 
 WORKDIR /opt/
