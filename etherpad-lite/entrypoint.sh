@@ -15,11 +15,15 @@ if [ "$ETHERPAD_DB_USER" = 'root' ]; then
 	: ${ETHERPAD_DB_PASSWORD:=$MYSQL_ENV_MYSQL_ROOT_PASSWORD}
 fi
 
+if [ -n "$ETHERPAD_DB_PASSWORD_FILE" ]; then
+	: ${ETHERPAD_DB_PASSWORD:=$(cat $ETHERPAD_DB_PASSWORD_FILE)}
+fi
+
 if [ -z "$ETHERPAD_DB_PASSWORD" ]; then
 	echo >&2 'error: missing required ETHERPAD_DB_PASSWORD environment variable'
 	echo >&2 '  Did you forget to -e ETHERPAD_DB_PASSWORD=... ?'
 	echo >&2
-	echo >&2 '  (Also of interest might be ETHERPAD_DB_USER and ETHERPAD_DB_NAME.)'
+	echo >&2 '  (Also of interest might be ETHERPAD_DB_PASSWORD_FILE, ETHERPAD_DB_USER and ETHERPAD_DB_NAME.)'
 	exit 1
 fi
 
