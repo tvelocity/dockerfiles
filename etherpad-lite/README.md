@@ -72,6 +72,7 @@ database is not available, it will be created when the container is launched
 (only if the database type is either `mysql` or `postgres`, and the user need to
 have the right to create the database).
 * `ETHERPAD_DB_CHARSET`: The charset to use. Defaults to *utf8mb4*.
+* `ETHERPAD_API_KEY`: if file `APIKEY.txt` is missing, the variable value is used to provision it
 
 The generated settings.json file will be available as a volume under
 */opt/etherpad-lite/var/*.
