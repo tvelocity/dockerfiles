@@ -3,6 +3,7 @@ set -e
 
 : ${ETHERPAD_DB_TYPE:=mysql}
 : ${ETHERPAD_DB_HOST:=mysql}
+: ${ETHERPAD_DB_PORT:=3306}
 : ${ETHERPAD_DB_USER:=root}
 : ${ETHERPAD_DB_NAME:=etherpad}
 : ${ETHERPAD_DB_CHARSET:=utf8mb4}
@@ -32,7 +33,7 @@ fi
 
 # Check if database already exists
 if [ "$ETHERPAD_DB_TYPE" == 'mysql' ]; then
-	RESULT=`mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} \
+	RESULT=`mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} --port=${ETHERPAD_DB_PORT} \
 		-h${ETHERPAD_DB_HOST} --skip-column-names \
 		-e "SHOW DATABASES LIKE '${ETHERPAD_DB_NAME}'"`
 
@@ -40,7 +41,7 @@ if [ "$ETHERPAD_DB_TYPE" == 'mysql' ]; then
 		# mysql database does not exist, create it
 		echo "Creating database ${ETHERPAD_DB_NAME}"
 
-		mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -h${ETHERPAD_DB_HOST} \
+		mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -h${ETHERPAD_DB_HOST} --port=${ETHERPAD_DB_PORT} \
 		      -e "create database ${ETHERPAD_DB_NAME}"
 	fi
 fi
@@ -67,6 +68,7 @@ if [ ! -f settings.json ]; then
 	  "dbSettings" : {
 			    "user"    : "${ETHERPAD_DB_USER}",
 			    "host"    : "${ETHERPAD_DB_HOST}",
+			    "port"    : "${ETHERPAD_DB_PORT}",
 			    "password": "${ETHERPAD_DB_PASSWORD}",
 			    "database": "${ETHERPAD_DB_NAME}",
 			    "charset": "${ETHERPAD_DB_CHARSET}"
