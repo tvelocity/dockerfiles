@@ -22,6 +22,8 @@ COPY entrypoint.sh /entrypoint.sh
 
 RUN sed -i 's/^node/exec\ node/' bin/run.sh
 
+RUN chmod g+rwX,o+rwX -R .
+
 VOLUME /opt/etherpad-lite/var
 RUN ln -s var/settings.json settings.json
 
