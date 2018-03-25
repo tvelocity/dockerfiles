@@ -62,7 +62,7 @@ if [ ! -f settings.json ]; then
 	{
 	  "title": "${ETHERPAD_TITLE}",
 	  "ip": "0.0.0.0",
-	  "port" :${ETHERPAD_PORT},
+	  "port": "${ETHERPAD_PORT}",
 	  "dbType" : "${ETHERPAD_DB_TYPE}",
 	  "dbSettings" : {
 			    "user"    : "${ETHERPAD_DB_USER}",
