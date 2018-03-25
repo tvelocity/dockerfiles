@@ -57,6 +57,11 @@ if [ "$ETHERPAD_DB_TYPE" == 'postgres' ]; then
 	fi
 fi
 
+if [ ! -f APIKEY.txt ] && [ ! -z "${ETHERPAD_API_KEY}" ] ; then
+    echo "Creating APIKEY.txt as ETHERPAD_API_KEY is defined";
+    echo "${ETHERPAD_API_KEY}" > APIKEY.txt
+fi
+
 if [ ! -f settings.json ]; then
 
 	cat <<- EOF > settings.json
