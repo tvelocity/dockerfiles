@@ -22,6 +22,7 @@ COPY entrypoint.sh /entrypoint.sh
 
 RUN sed -i 's/^node/exec\ node/' bin/run.sh
 
+# OpenShift runs containers as non-root
 RUN chmod g+rwX,o+rwX -R .
 
 VOLUME /opt/etherpad-lite/var
