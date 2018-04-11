@@ -5,7 +5,7 @@ MAINTAINER Tony Motakis <tvelocity@gmail.com>
 ENV ETHERPAD_VERSION 1.6.1
 
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip nodejs-legacy npm mysql-client node-pg postgresql-client && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip nodejs-legacy npm mysql-client node-pg postgresql-client && wait-for-it \
     rm -r /var/lib/apt/lists/*
 
 WORKDIR /opt/

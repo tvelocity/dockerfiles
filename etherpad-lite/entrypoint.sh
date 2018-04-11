@@ -31,6 +31,9 @@ fi
 : ${ETHERPAD_TITLE:=Etherpad}
 : ${ETHERPAD_PORT:=9001}
 
+# Wait for the database to come up. Right now, we don't timeout if this fails
+wait-for-it --quiet --host={ETHERPAD_DB_HOST} --port=${ETHERPAD_DB_PORT}
+
 # Check if database already exists
 if [ "$ETHERPAD_DB_TYPE" == 'mysql' ]; then
 	RESULT=`mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} --port=${ETHERPAD_DB_PORT} \
