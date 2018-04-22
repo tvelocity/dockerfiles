@@ -2,7 +2,7 @@
 FROM debian:jessie
 MAINTAINER Tony Motakis <tvelocity@gmail.com>
 
-ENV ETHERPAD_VERSION 1.6.1
+ENV ETHERPAD_VERSION 1.6.5
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip nodejs-legacy npm mysql-client node-pg postgresql-client && \
