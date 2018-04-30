@@ -5,7 +5,9 @@ MAINTAINER Tony Motakis <tvelocity@gmail.com>
 ENV ETHERPAD_VERSION 1.6.5
 
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip nodejs-legacy npm mysql-client node-pg postgresql-client && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip mysql-client postgresql-client && \
+    curl -sL https://deb.nodesource.com/setup_9.x | bash - && \
+    apt-get install -y nodejs node-pg && \
     rm -r /var/lib/apt/lists/*
 
 WORKDIR /opt/
