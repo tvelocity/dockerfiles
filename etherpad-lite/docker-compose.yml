@@ -1,0 +1,20 @@
+version: '3.3'
+services:
+  pad:
+#    build: .
+    image: tvelocity/etherpad-lite
+    restart: always
+    ports:
+      - 9001:9001
+#    volumes:
+#      - /docker/etherpad/main:/opt/etherpad-lite/var
+    environment:
+      - ETHERPAD_DB_PASSWORD=changeme
+      - NODE_ENV=production
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=changeme
+#    volumes:
+#      - /docker/etherpad/mysql-dir:/var/lib/mysql
