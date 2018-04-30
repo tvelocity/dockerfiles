@@ -24,7 +24,31 @@ You don't need to set up a server and install Etherpad in order to use it. Just 
 
 ## Quickstart
 
-Just run the docker-compose file to create a mysql-container and connect the etherpad container to it:
+Save this as `docker-compose.yml`:
+```
+version: '3.3'
+services:
+  pad:
+#    build: .
+    image: tvelocity/etherpad-lite
+    restart: always
+    ports:
+      - 9001:9001
+#    volumes:
+#      - /docker/etherpad/main:/opt/etherpad-lite/var
+    environment:
+      - ETHERPAD_DB_PASSWORD=changeme
+      - NODE_ENV=production
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=changeme
+#    volumes:
+#      - /docker/etherpad/mysql-dir:/var/lib/mysql
+```
+
+Run the docker-compose file to create a mysql-container and connect the etherpad container to it:
 ```bash
 $ docker-compose up -d
 ```
