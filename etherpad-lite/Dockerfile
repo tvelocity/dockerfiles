@@ -1,7 +1,7 @@
 FROM node:9
 MAINTAINER Tony Motakis <tvelocity@gmail.com>
 
-ENV ETHERPAD_VERSION 1.6.5
+ENV ETHERPAD_VERSION 1.6.6
 ENV NODE_ENV production
 
 RUN apt-get update && \
