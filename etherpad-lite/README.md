@@ -28,7 +28,7 @@ First you need a running mysql container, for example:
 
 ```bash
 $ docker network create ep_network
-$ docker run -d --network ep_network -e MYSQL_ROOT_PASSWORD=password --name ep_mysql mysql
+$ docker run -d --network ep_network -e MYSQL_ROOT_PASSWORD=password --name ep_mysql mysql:5.7
 ```
 
 Finally you can start an instance of Etherpad Lite:
