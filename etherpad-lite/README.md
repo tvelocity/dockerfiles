@@ -1,3 +1,7 @@
+# UNMAINTAINED
+
+**This repository is not being maintained anymore.** Fortunately, there are now many etherpad docker images you can choose from, including the [official one by the etherpad team](https://hub.docker.com/r/etherpad/etherpad).
+
 # Etherpad Lite image for docker
 
 This is a docker image for [Etherpad Lite](http://etherpad.org/) collaborative
