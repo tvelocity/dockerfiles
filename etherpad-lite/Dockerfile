@@ -1,4 +1,4 @@
-FROM node:9
+FROM node:latest
 MAINTAINER Tony Motakis <tvelocity@gmail.com>
 
 ENV ETHERPAD_VERSION 1.6.5
@@ -6,8 +6,10 @@ ENV NODE_ENV production
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    curl unzip mysql-client node-pg postgresql-client && \
+    curl unzip mysql-client postgresql-client && \
     rm -r /var/lib/apt/lists/*
+
+RUN npm install pg
 
 WORKDIR /opt/
 
